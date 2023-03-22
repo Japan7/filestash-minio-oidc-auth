@@ -22,14 +22,19 @@ app = FastAPI()
 client = aiohttp.ClientSession()
 
 
+@app.get('/login')
+async def login():
+    return RedirectResponse(f'{API_PREFIX}/login', status_code=301)
+
+
 @app.get(f'{API_PREFIX}/login')
-async def filestash_login():
+async def keycloak_login():
     return RedirectResponse(f'{BASE_OIDC_URL}/auth?client_id={MINIO_KEYCLOAK_CLIENT_ID}'
                             f'&redirect_uri={FILESTASH_REDIRECT_URI}&response_type=code&scope=openid')
 
 
 @app.get(f'{API_PREFIX}/callback')
-async def filestash_callback(code: str):
+async def keycloak_callback(code: str):
     token_form = FormData(dict(
         client_id=MINIO_KEYCLOAK_CLIENT_ID,
         client_secret=MINIO_KEYCLOAK_CLIENT_SECRET,
