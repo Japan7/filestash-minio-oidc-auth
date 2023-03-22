@@ -5,9 +5,16 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from toolz.curried import memoize
 
-from .settings import (API_PREFIX, FILESTASH_API_KEY, FILESTASH_URL,
-                       KEYCLOAK_REALM, KEYCLOAK_URL, MINIO_KEYCLOAK_CLIENT_ID,
-                       MINIO_KEYCLOAK_CLIENT_SECRET, MINIO_URL)
+from .settings import (
+    API_PREFIX,
+    FILESTASH_API_KEY,
+    FILESTASH_URL,
+    KEYCLOAK_REALM,
+    KEYCLOAK_URL,
+    MINIO_KEYCLOAK_CLIENT_ID,
+    MINIO_KEYCLOAK_CLIENT_SECRET,
+    MINIO_URL,
+)
 
 BASE_OIDC_URL = f'{KEYCLOAK_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect'
 FILESTASH_REDIRECT_URI = f'{FILESTASH_URL}{API_PREFIX}/callback'
@@ -58,7 +65,7 @@ async def keycloak_callback(code: str):
         secret_access_key=creds['SecretAccessKey'],
         session_token=creds['SessionToken'],
     )
-    async with get_session().post('/api/session',
+    async with get_session().post(f'{FILESTASH_URL}/api/session',
                                   params=dict(key=FILESTASH_API_KEY),
                                   json=filestash_json) as resp:
         set_cookie = resp.headers['Set-Cookie']
