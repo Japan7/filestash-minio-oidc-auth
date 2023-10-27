@@ -11,5 +11,14 @@
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [".*\\.ts$"],
+      "matchStrings": [
+        "import .*\"(?<depName>https:\\/\\/.*)@(?<currentValue>[^\\/]*)\\/.*\";"
+      ],
+      "datasourceTemplate": "deno"
+    }
   ]
 }
