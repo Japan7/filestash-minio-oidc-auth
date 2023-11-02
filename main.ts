@@ -73,12 +73,12 @@ async function createFilestashSession(s3WebId: HTMLDocument) {
     method: "POST",
     body: JSON.stringify(payload),
   });
-  const setCookie = resp.headers.get("Set-Cookie");
+  const setCookie = resp.headers.get("Set-Cookie")!;
   return setCookie;
 }
 
 app.get(`${API_PREFIX}/callback`, async (c) => {
-  const accessToken = await getOIDCAccessToken(c.req.query("code"));
+  const accessToken = await getOIDCAccessToken(c.req.query("code")!);
   const s3WebId = await getMinioCreds(accessToken);
   const setCookie = await createFilestashSession(s3WebId);
   c.res.headers.set("Set-Cookie", setCookie);
