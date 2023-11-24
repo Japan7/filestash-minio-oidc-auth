@@ -1,4 +1,4 @@
-import "https://deno.land/std@0.207.0/dotenv/load.ts";
+import "https://deno.land/std@0.208.0/dotenv/load.ts";
 import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.43/deno-dom-wasm.ts";
 import { HTMLDocument } from "https://deno.land/x/deno_dom@v0.1.43/src/dom/document.ts";
 import { logger } from "https://deno.land/x/hono@v3.10.2/middleware.ts";
