@@ -30,9 +30,12 @@ app.get("/login", (c) => {
 });
 
 app.get(`${API_PREFIX}/login`, (c) => {
-  return c.redirect(
-    `${BASE_OIDC_URL}/auth?client_id=${MINIO_KEYCLOAK_CLIENT_ID}&redirect_uri=${FILESTASH_REDIRECT_URI}&response_type=code&scope=openid`
-  );
+  const params = new URLSearchParams();
+  params.append("client_id", MINIO_KEYCLOAK_CLIENT_ID);
+  params.append("redirect_uri", FILESTASH_REDIRECT_URI);
+  params.append("response_type", "code");
+  params.append("scope", "openid");
+  return c.redirect(`${BASE_OIDC_URL}/auth?${params}`);
 });
 
 async function getOIDCAccessToken(code: string): Promise<string> {
