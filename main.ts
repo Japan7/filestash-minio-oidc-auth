@@ -69,6 +69,7 @@ async function getOIDCAccessToken(code: string) {
     body: form,
   });
   const json = await resp.json();
+  console.debug(json);
 
   return json.access_token as string;
 }
@@ -80,6 +81,7 @@ async function getMinioCreds(accessToken: string) {
   params.append("Version", "2011-06-15");
   const resp = await fetch(`${MINIO_URL}/?${params}`, { method: "POST" });
   const text = await resp.text();
+  console.debug(text);
   const doc = domParser.parseFromString(text, "text/html")!; // FIXME: use a proper XML parser
   return doc;
 }
@@ -99,6 +101,7 @@ async function createFilestashSession(s3WebId: HTMLDocument) {
     body: JSON.stringify(payload),
   });
   const setCookie = resp.headers.get("Set-Cookie")!;
+  console.debug(resp.headers);
   return setCookie;
 }
 
