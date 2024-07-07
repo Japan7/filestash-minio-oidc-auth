@@ -76,7 +76,7 @@ async function getOIDCAccessToken(code: string) {
 async function getMinioCreds(accessToken: string) {
   const params = new URLSearchParams();
   params.append("Action", "AssumeRoleWithWebIdentity");
-  params.append("WebIdentityToken", accessToken);
+  params.append("WebIdentityAccessToken", accessToken);
   params.append("Version", "2011-06-15");
   const resp = await fetch(`${MINIO_URL}/?${params}`, { method: "POST" });
   const text = await resp.text();
