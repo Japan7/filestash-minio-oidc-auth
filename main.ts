@@ -31,7 +31,7 @@ app.get(`${API_PREFIX}/login`, async (c) => {
   authUrl.searchParams.set("client_id", OIDC_CLIENT_ID);
   authUrl.searchParams.set("redirect_uri", FILESTASH_REDIRECT_URI);
   authUrl.searchParams.set("response_type", "code");
-  authUrl.searchParams.set("scope", "openid groups");
+  authUrl.searchParams.set("scope", "openid profile email groups");
   return c.redirect(authUrl.toString());
 });
 
