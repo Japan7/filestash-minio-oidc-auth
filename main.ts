@@ -36,17 +36,20 @@ app.get(`${API_PREFIX}/login`, async (c) => {
 });
 
 app.get(`${API_PREFIX}/callback`, async (c) => {
-  const accessToken = await getOIDCAccessToken(c.req.query("code")!);
-  const s3WebId = await getMinioCreds(accessToken);
+  const oidcResponse = await exchangeOIDCCode(c.req.query("code")!);
+  const s3WebId = await getMinioCreds(oidcResponse);
   const setCookie = await createFilestashSession(s3WebId);
   c.res.headers.set("Set-Cookie", setCookie);
   return c.redirect("/");
 });
 
-let oidcConfig: {
+interface OIDCConfiguration {
   authorization_endpoint: string;
   token_endpoint: string;
-};
+}
+
+let oidcConfig: OIDCConfiguration;
+
 async function getOIDCConfig() {
   if (!oidcConfig) {
     const resp = await fetch(OIDC_CONFIG_URL);
@@ -55,7 +58,11 @@ async function getOIDCConfig() {
   return oidcConfig;
 }
 
-async function getOIDCAccessToken(code: string) {
+interface OIDCResponse {
+  access_token: string;
+  id_token: string;
+}
+async function exchangeOIDCCode(code: string) {
   const form = new URLSearchParams();
   form.append("client_id", OIDC_CLIENT_ID);
   form.append("client_secret", OIDC_CLIENT_SECRET);
@@ -71,13 +78,14 @@ async function getOIDCAccessToken(code: string) {
   const json = await resp.json();
   console.debug(json);
 
-  return json.access_token as string;
+  return json as OIDCResponse;
 }
 
-async function getMinioCreds(accessToken: string) {
+async function getMinioCreds(oidcResponse: OIDCResponse) {
   const params = new URLSearchParams();
   params.append("Action", "AssumeRoleWithWebIdentity");
-  params.append("WebIdentityAccessToken", accessToken);
+  params.append("WebIdentityAccessToken", oidcResponse.access_token);
+  params.append("WebIdentityToken", oidcResponse.id_token);
   params.append("Version", "2011-06-15");
   const resp = await fetch(`${MINIO_URL}/?${params}`, { method: "POST" });
   const text = await resp.text();
