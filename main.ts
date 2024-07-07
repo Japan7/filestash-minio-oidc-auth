@@ -22,7 +22,7 @@ const domParser = new DOMParser();
 app.use("*", logger());
 
 app.get("/login", (c) => {
-  return c.redirect(`${API_PREFIX}/login`, 301);
+  return c.redirect(`${API_PREFIX}/login`, 302);
 });
 
 app.get(`${API_PREFIX}/login`, async (c) => {
